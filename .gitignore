@@ -1,0 +1,5 @@
+# Ignore pycache and venv folders
+**/__pycache__
+**/venv
+**/.env
+TowerDefense_AI_v2/
