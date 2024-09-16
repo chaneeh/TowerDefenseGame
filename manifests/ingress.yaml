@@ -1,0 +1,51 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: websocket-ingress
+  annotations:
+    kubernetes.io/ingress.class: alb
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: instance
+    alb.ingress.kubernetes.io/load-balancer-name : towerdefense-ai-alb
+    alb.ingress.kubernetes.io/certificate-arn: {{CERTIFICATE_ARN}}
+    alb.ingress.kubernetes.io/healthcheck-interval-seconds: '30'
+spec:
+  rules:
+    - host: {{TOWERDEFENSE_AI_DOMAIN}}
+      http:
+        paths:
+          - path: /websocket-prod
+            pathType: Prefix
+            backend:
+              service:
+                name: websocket-server-prod
+                port:
+                  number: 8000
+          - path: /websocket-train
+            pathType: Prefix
+            backend:
+              service:
+                name: websocket-server-train
+                port:
+                  number: 8000
+          - path: /ml-server-prod
+            pathType: Prefix
+            backend:
+              service:
+                name: ml-server-prod
+                port:
+                  number: 8100
+          - path: /ml-server-train
+            pathType: Prefix
+            backend:
+              service:
+                name: ml-server-train
+                port:
+                  number: 8100
+          - path: /simulator-prod
+            pathType: Prefix
+            backend:
+              service:
+                name: simulator-prod
+                port:
+                  number: 80

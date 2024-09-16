@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simulator-prod
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simulator-prod
+  template:
+    metadata:
+      labels:
+        app: simulator-prod
+    spec:
+      containers:
+      - name: simulator-prod
+        image: {{SIMULATOR_PROD_IMAGE}}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 80
+        resources:
+          limits:
+            cpu: "100m"
+            memory: "100Mi"
+          requests:
+            cpu: "100m"
+            memory: "100Mi"
+        livenessProbe:
+          httpGet:
+            path: /simulator-prod/health
+            port: 80
+          timeoutSeconds: 10
+          initialDelaySeconds: 30
+          periodSeconds: 60
+        readinessProbe:
+          httpGet:
+            path: /simulator-prod/health
+            port: 80
+          timeoutSeconds: 10
+          initialDelaySeconds: 30
+          periodSeconds: 60
+

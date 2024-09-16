@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: simulator-celery
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: simulator-celery
+  template:
+    metadata:
+      labels:
+        app: simulator-celery
+    spec:
+      containers:
+      - name: simulator-celery
+        image: {{SIMULATOR_PROD_IMAGE}}
+        imagePullPolicy: Always
+        command: ["celery", "-A", "app.worker.celery", "worker", "--concurrency=1", "--loglevel=info"]
+        env:
+        - name: CELERY_BROKER_URL
+          value: {{REDIS_URL}}
+        - name: CELERY_RESULT_BACKEND
+          value: {{REDIS_URL}}
+        - name: PG_CONNECTION
+          valueFrom:
+            secretKeyRef:
+              name: postgres-credentials
+              key: PG_CONNECTION
+        resources:
+          limits:
+            cpu: "1700m"
+            memory: "500Mi"
+          requests:
+            cpu: "1700m"
+            memory: "500Mi"
+        livenessProbe:
+          exec:
+            command: [
+              "/bin/bash",
+              "-c",
+              "celery -A app.worker.celery status -d celery@$HOSTNAME"
+            ]
+          timeoutSeconds: 10
+          initialDelaySeconds: 15
+          periodSeconds: 60
+        readinessProbe:
+          exec:
+            command: [
+              "/bin/bash",
+              "-c",
+              "celery -A app.worker.celery inspect ping -d celery@$HOSTNAME"
+            ]
+          timeoutSeconds: 10
+          initialDelaySeconds: 15
+          periodSeconds: 60
+
+

@@ -1,0 +1,24 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: simulator-keda-celery
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: simulator-celery
+  minReplicaCount: 0
+  maxReplicaCount: 10
+  pollingInterval:  30
+  cooldownPeriod:   300 # wait time after determined to scale down
+  advanced:
+    horizontalPodAutoscalerConfig:
+      behavior:
+        scaleDown:
+          stabilizationWindowSeconds: 600 # when deciding to scale down, observer windowsecond, and watch maximum metrix in a given window
+  triggers:
+  - type: postgresql
+    metadata:
+      connectionFromEnv: PG_CONNECTION
+      query: "SELECT COALESCE(MAX(keda_target_value), 0) FROM simulator_tasks_info WHERE update_timestamp >= (NOW() AT TIME ZONE 'Asia/Seoul' - INTERVAL '10 minutes');"
+      targetQueryValue: "1"

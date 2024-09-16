@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: websocket-server-train
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: websocket-server-train
+  template:
+    metadata:
+      labels:
+        app: websocket-server-train
+    spec:
+      containers:
+      - name: websocket-server-train
+        image: {{WEBSOCKET_TRAIN_IMAGE}}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "200Mi"
+          requests:
+            cpu: "200m"
+            memory: "200Mi"
+        command: ["uvicorn"]
+        args: ["app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+        readinessProbe:
+          httpGet:
+            path: /websocket-train/health
+            port: 8000
+          timeoutSeconds: 10
+          initialDelaySeconds: 10
+          periodSeconds: 120
+        livenessProbe:
+          httpGet:
+            path: /websocket-train/health
+            port: 8000
+          timeoutSeconds: 10
+          initialDelaySeconds: 10
+          periodSeconds: 120
+

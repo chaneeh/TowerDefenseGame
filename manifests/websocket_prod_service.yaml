@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: websocket-server-prod
+  annotations:
+    alb.ingress.kubernetes.io/healthcheck-path: /websocket-prod/health
+spec:
+  selector:
+    app: websocket-server-prod
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+  type: NodePort

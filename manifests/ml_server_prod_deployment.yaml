@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ml-server-prod
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ml-server-prod
+  template:
+    metadata:
+      labels:
+        app: ml-server-prod
+    spec:
+      containers:
+      - name: ml-server-prod
+        image: {{ML_SERVER_PROD_IMAGE}}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8100
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "200Mi"
+          requests:
+            cpu: "200m"
+            memory: "200Mi"
+        command: ["uvicorn"]
+        args: ["app.main:app", "--host", "0.0.0.0", "--port", "8100"]
+        readinessProbe:
+          httpGet:
+            path: /ml-server-prod/health
+            port: 8100
+          timeoutSeconds: 10
+          initialDelaySeconds: 10
+          periodSeconds: 120
+        livenessProbe:
+          httpGet:
+            path: /ml-server-prod/health
+            port: 8100
+          timeoutSeconds: 10
+          initialDelaySeconds: 10
+          periodSeconds: 120
+

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: simulator-prod
+  annotations:
+    alb.ingress.kubernetes.io/healthcheck-path: /simulator-prod/health
+spec:
+  selector:
+    app: simulator-prod
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
+  type: NodePort

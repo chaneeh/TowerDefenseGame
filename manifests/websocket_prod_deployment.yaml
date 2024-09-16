@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: websocket-server-prod
+spec:
+  revisionHistoryLimit: 1
+  replicas: 1
+  selector:
+    matchLabels:
+      app: websocket-server-prod
+  template:
+    metadata:
+      labels:
+        app: websocket-server-prod
+    spec:
+      containers:
+      - name: websocket-server-prod
+        image: {{WEBSOCKET_PROD_IMAGE}}
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 8000
+        resources:
+          limits:
+            cpu: "200m"
+            memory: "200Mi"
+          requests:
+            cpu: "200m"
+            memory: "200Mi"
+        command: ["uvicorn"]
+        args: ["app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+        readinessProbe:
+          httpGet:
+            path: /websocket-prod/health
+            port: 8000
+          timeoutSeconds: 10
+          initialDelaySeconds: 10
+          periodSeconds: 60
+        livenessProbe:
+          httpGet:
+            path: /websocket-prod/health
+            port: 8000
+          timeoutSeconds: 10
+          initialDelaySeconds: 10
+          periodSeconds: 60
+
