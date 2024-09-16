@@ -1,4 +1,4 @@
-# Manifests 폴더
+# Manifests
 
 이 폴더는 Argo CD를 통해 Kubernetes 클러스터에 애플리케이션을 배포할 때 사용되는 Kubernetes manifests 파일들을 포함하고 있습니다. Argo CD의 Code Deploy 과정에서 필요한 모든 설정 파일들이 이곳에 저장됩니다.
 
