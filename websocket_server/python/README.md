@@ -29,7 +29,7 @@ folder_dir/
 ```
 
 ## 3.테스트 코드 작성
-tests 폴더에 테스트 로직을 추가합니다. 예시로 test_main.py에 다음과 같은 코드를 작성할 수 있습니다.
+tests 폴더에 테스트 로직을 추가합니다. 예시로 test_ml_endpoint.py에 다음과 같은 코드를 작성할 수 있습니다.
 ```python
 import pytest
 from app.ml_endpoint import map_action_to_game_state
