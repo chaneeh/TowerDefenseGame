@@ -16,7 +16,7 @@ pip freeze > requirements.txt
 테스트 코드를 작성하기 위해 tests 폴더를 추가하고, 테스트 파일을 생성합니다. 예시 디렉토리 구조는 다음과 같습니다:
 
 ```bash
-folder_dir/
+websocket_server/python/
 │
 ├── app/
 │   ├── main.py

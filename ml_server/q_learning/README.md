@@ -16,7 +16,7 @@ pip freeze > requirements.txt
 테스트 코드를 작성하기 위해 tests 폴더를 추가하고, 테스트 파일을 생성합니다. 예시 디렉토리 구조는 다음과 같습니다:
 
 ```bash
-folder_dir/
+ml_server/q_learning/
 │
 ├── app/
 │   ├── main.py
@@ -41,9 +41,10 @@ def test_read_root():
     assert response.status_code == 200
     assert response.json() == {"status": "ok"}
     
-def test_search_action_space():
-    state = (0, 4, 1, 0, 0, 5, 0, 0, 5, 0, 0, 5, 1)
-    response = client.post("/ml-server-prod/search_action_space", json={"state": state})
+def test_prediction():
+    state = (2, 0, 3, 0, 0, 5, 0, 0, 5, 0, 0, 5, 1)
+    epsilon = 0.0
+    response = client.post("/ml-server-prod/predict", json={"state": state, "epsilon": epsilon})
     assert response.status_code == 200
 ```
 
