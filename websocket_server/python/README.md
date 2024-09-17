@@ -70,3 +70,38 @@ python3 -m pytest tests
 ```
 
 
+# WebSocket message
+
+unity에서 전송한 ws 메세지는 아래와 같은 형식이어야 합니다.
+
+```python
+class TowerDefenseMessage(BaseModel):
+    agent: str
+    type_1: str
+    type_2: str
+    currentGold: int 
+    currentWaveIndex: int 
+    strategy: str 
+    data: str
+    client_id: str 
+    client_timestamp_unix: str
+    game_start_timestamp_unix: str 
+
+    @field_validator('agent')
+    def check_agent(cls, v):
+        if v not in (['PlayerStats', 'TowerSpawner', 'EnemySpawner'] + ['PlayerStatsAI', 'TowerSpawnerAI', 'EnemySpawnerAI']):
+            raise ValueError('agent check failed')
+        return v
+
+    @field_validator('type_1')
+    def check_type_1(cls, v):
+        if v not in ['gold', 'tower', 'wave']:
+            raise ValueError('type_1 check failed')
+        return v
+
+    @field_validator('strategy')
+    def check_strategy(cls, v):
+        if v not in ['greedy', 'ml']:
+            raise ValueError('strategy check failed')
+        return v
+```
