@@ -2,7 +2,6 @@ package com.example.helloworld.service;
 
 import com.example.helloworld.model.PredictRequest;
 import com.example.helloworld.model.TowerDefenseMessage;
-import com.example.helloworld.model.TowerDefenseResponse;
 import com.example.helloworld.utils.HttpClientUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

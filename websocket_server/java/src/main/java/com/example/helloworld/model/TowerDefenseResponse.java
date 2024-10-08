@@ -2,7 +2,6 @@ package com.example.helloworld.model;
 
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import jakarta.validation.ConstraintViolation;
