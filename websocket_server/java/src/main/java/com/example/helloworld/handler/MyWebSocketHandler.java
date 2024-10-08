@@ -102,19 +102,6 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
 
     private void handleTowerMLMsg(TowerDefenseMessage dataModel, WebSocketSession session) throws Exception {
         System.out.println("ML strategy: " + dataModel.getStrategy());
-        Map<String, Object> ruleBasedResponse = checkRuleBasedUpgradeCondition(dataModel.getAgent(), dataModel.getCurrentGold(), dataModel.getCurrent_towerstatus());
-    
-        if (ruleBasedResponse != null) {
-            TowerDefenseResponse response = new TowerDefenseResponse(
-                    (String) ruleBasedResponse.get("agent"),
-                    (String) ruleBasedResponse.get("action"),
-                    (String) ruleBasedResponse.getOrDefault("level", null),
-                    (String) ruleBasedResponse.getOrDefault("type", null)
-            );
-            String responseJson = objectMapper.writeValueAsString(response);
-            session.sendMessage(new TextMessage(responseJson));
-            return;
-        }
 
         mlService.mlRequestEndpoint(dataModel)
             .thenAccept(actionItem -> {
@@ -167,31 +154,6 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
             dataModel.getClient_timestamp(), 
             waveReward
         );
-    }
-
-    private Map<String, Object> checkRuleBasedUpgradeCondition(String agent, int gold, Map<String, Map<String, String>> towerStatus) {
-        if (gold > 0) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("agent", agent);
-            response.put("action", "stay");
-            return response;
-        } else {
-            for (String level : towerStatus.keySet()) {
-                Map<String, String> levelStatus = towerStatus.get(level);
-                for (String towerType : levelStatus.keySet()) {
-                    int towerTypeCount = Integer.parseInt(levelStatus.get(towerType));
-                    if (towerTypeCount >= 3) {
-                        Map<String, Object> response = new HashMap<>();
-                        response.put("agent", agent);
-                        response.put("action", "upgrade");
-                        response.put("level", level);
-                        response.put("type", towerType);
-                        return response;
-                    }
-                }
-            }
-        }
-        return null;
     }
         
 }
