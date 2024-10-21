@@ -1,9 +1,6 @@
-학습 목적으로 java로 변환 작업을 진행하고 있습니다. prod에는 python 버전 서버가 사용되고 있습니다.
+## ws server 테스트 코드 작성
 
-
-### ws server 테스트 코드 작성
-
-#### 1. 테스트 코드 위치
+### 1. 테스트 코드 위치
 아래 위치에 테스트 코드 작성하면 됩니다
 
 ```markdown
@@ -12,7 +9,7 @@ src
     └── java
         └── com
             └── example
-                └── helloword     <---- 테스트 코드 작성
+                └── TowerDefense     <---- 테스트 코드 작성
                     ├── controller
                     │   └── WebSocketControllerTest.java
                     └── service
@@ -20,9 +17,39 @@ src
 
 ```
 
-#### 2. Example Test Code
+### 2. Example Test Code
 
 현재  **controller** 와 **service**에 대해 테스트 코드가 작성되어 있습니다.
+
+
+
+**Service utils Test:**
+
+```java
+static Stream<MapActionTestCase> mapActionToGameStateTestCases() {
+    return Stream.of(
+        new MapActionTestCase(
+            "agent_1", 0,
+            Map.of(
+                "1", Map.of("type1", "2", "type2", "1"),
+                "2", Map.of("type1", "2", "type2", "0"),
+                "3", Map.of("type1", "1", "type2", "0"),
+                "4", Map.of("type1", "0", "type2", "0")
+            ),
+            Map.of("agent", "agent_1", "action", "stay")
+        )
+        ... // get add multiple examples
+    );
+}
+
+@ParameterizedTest
+@MethodSource("createMlFeatureTestCases")
+void testCreateMlFeature(MLFeatureTestCase testCase) {
+    List<Integer> result = mlService.createMlFeature(testCase.getTestInputTowerStatus(), testCase.getTestInputCurrentWaveIndex());
+    assertEquals(testCase.getExpectedOutput(), result);
+}
+
+```
 
 **Controller Test:**
 
@@ -57,42 +84,11 @@ class HelloWorldApplicationTests {
     }
 }
 
-```
-
-**Service utils Test:**
-
-```java
-...
-    static Stream<MapActionTestCase> mapActionToGameStateTestCases() {
-        return Stream.of(
-            new MapActionTestCase(
-                "agent_1", 0,
-                Map.of(
-                    "1", Map.of("type1", "2", "type2", "1"),
-                    "2", Map.of("type1", "2", "type2", "0"),
-                    "3", Map.of("type1", "1", "type2", "0"),
-                    "4", Map.of("type1", "0", "type2", "0")
-                ),
-                Map.of("agent", "agent_1", "action", "stay")
-            )
-            ... // get add multiple examples
-        );
-    }
-
-    @ParameterizedTest
-    @MethodSource("createMlFeatureTestCases")
-    void testCreateMlFeature(MLFeatureTestCase testCase) {
-        List<Integer> result = mlService.createMlFeature(testCase.getTestInputTowerStatus(), testCase.getTestInputCurrentWaveIndex());
-        assertEquals(testCase.getExpectedOutput(), result);
-    }
-
-```
-
-#### 3. Running the Tests
+### 3. Running the Tests
 
 ```bash
 mvn test
 ```
 
-### Additional Notes:
-- prod와 test 버전을 다르게 관리하고 싶다면 `application-test.properties` 을 활용해도 됩니다.
+## Additional Notes:
+- `application-{version}.properties` 으로 여러 테스트 버전을 관리할수 있습니다.
