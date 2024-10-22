@@ -43,12 +43,12 @@ https://tower-defense-ai.chaneeh-games.com
 
 ![Architecture Diagram](./images/tower_defense_train_simulator_architecture.png)
 
-### Performance
+## Performance
 
 q-table과 greedy agent 전략을 비교한것입니다.
 각 agent별로 100번의 simulate episode 로그를 통해 reward 및 게임 내 bonus 정보를 분석하였습니다.
 
-[reward]
+### Reward
 q-table이 초반에는 reward가 적지만, 이후 wave가 끝날때쯤에는 reward 및 성능이 더 좋은것을 확인할수 있습니다.
 
 ![Architecture Diagram](./images/performance_comparison_custom.png)
