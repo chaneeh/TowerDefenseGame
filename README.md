@@ -35,10 +35,20 @@ https://tower-defense-ai.chaneeh-games.com
 2. 💡 **요청된 simulator 횟수**만큼 (`Redis queue length` + `Active Celery worker`) **Unity simulator code**가 포함된 `Celery worker`가 **자동으로 스케일링**됩니다. 이 방식으로 **높은 확장성**을 추가하였습니다.
 3. 각 `Celery worker image`에 포함된 **Unity build code**는 **headless 모드**로 실행되어, 환경, action, reward 데이터를 수집합니다.
 
-#### 성능 및 리소스 사용
+#### 시뮬레이터 성능 및 리소스 사용
 
 - **각 simulator당** 평균 **1.7 core**를 사용하며, **6분**이 소요됩니다.
 - **학습 과정 각 스텝에서** 평균적으로 **80개의 simulator pod**를 병렬로 생성합니다.
 - **keda scaling**을 통해, 단일 시뮬레이션 클러스터에서 **수백 개의 에피소드**를 동시에 처리할 수 있습니다.
 
 ![Architecture Diagram](./images/tower_defense_train_simulator_architecture.png)
+
+### Performance
+
+q-table과 greedy agent 전략을 비교한것입니다.
+각 agent별로 100번의 simulate episode 로그를 통해 reward 및 게임 내 bonus 정보를 분석하였습니다.
+
+[reward]
+q-table이 초반에는 reward가 적지만, 이후 wave가 끝날때쯤에는 reward 및 성능이 더 좋은것을 확인할수 있습니다.
+
+![Architecture Diagram](./images/performance_comparison_custom.png)
