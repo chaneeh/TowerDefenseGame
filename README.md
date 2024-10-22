@@ -17,13 +17,20 @@ unity를 이용하여 타워디펜스 웹 게임을 구현하였습니다
 
 ### Simulator
 
-학습 및 simulate 구조도는 다음과 같습니다.
+**Agent action**을 모델링하기 위해 `Q Table`을 사용하였고, **모든 에피소드**(5 tower wave)가 끝난 뒤 보상을 계산하여 업데이트를 하였습니다.
 
-agent action을 모델링 하기 위해 q table 을 사용하였고, 모든 에피소드(5 tower wave)가 끝난뒤 보상을 계산하여 업데이트를 하였습니다.
+#### Train Process
 
-train process에서 데이터 수집을 위해 simulator eneque 서버에 add task 요청을 하면, redis에 task enque가 되고, 요청된 simulator 횟수만큼
-(`redis queue length` + `active celery worker`) unity simulater code가 포함된 celery worker 갯수가 scaling 됩니다. 
-이후 각 celery worker image에 포함되어 있는 unity build code를 headless 모드로 실행시켜 환경, action, reward data를 수집하였습니다.
+데이터 수집 과정은 다음과 같이 이루어집니다:
 
-한 simulator당 1.7 core를 6분 정도 사용하였고, 학습 과정 각 스텝에서 평균 80개의 시뮬레이터 pod를 병렬로 생성하였습니다.
+1. `Simulator Enqueue` 서버에 **add task 요청**을 하면, **Redis**에 task가 enqueue됩니다.
+2. 
+   > 💡 **요청된 simulator 횟수**만큼 (`Redis queue length` + `Active Celery worker`) **Unity simulator code**가 포함된 `Celery worker`가 **자동으로 스케일링**됩니다.
+3. 각 `Celery worker image`에 포함된 **Unity build code**는 **headless 모드**로 실행되어, 환경, action, reward 데이터를 수집합니다.
+
+#### 성능 및 리소스 사용
+
+- **각 simulator당** 평균 **1.7 core**를 사용하며, **6분**이 소요됩니다.
+- **학습 과정 각 스텝에서** 평균적으로 **80개의 simulator pod**를 병렬로 생성합니다.
+
 ![Architecture Diagram](./images/tower_defense_train_simulator_architecture.png)
